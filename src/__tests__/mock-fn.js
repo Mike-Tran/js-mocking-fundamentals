@@ -1,29 +1,42 @@
 const thumbWar = require('../thumb-war')
 const utils = require('../utils')
 
-test('returns winner', () => {
-  const originalGetWinner = utils.getWinner
-  utils.getWinner = jest.fn((p1, p2) => p1)
+describe('mocks-fn', () => {
+  const originalGetWinner = utils.getWinner;
+  beforeEach(() => {
+    const originalGetWinner = utils.getWinner;
+    utils.getWinner = jest.fn((p1, p2) => p1);
+  });
+  afterEach(()=> {
+    utils.getWinner = originalGetWinner;
+  });
 
-  const winner = thumbWar('Kent C. Dodds', 'Ken Wheeler')
-  expect(winner).toBe('Kent C. Dodds')
-  expect(utils.getWinner.mock.calls).toEqual([
-    ['Kent C. Dodds', 'Ken Wheeler'],
-    ['Kent C. Dodds', 'Ken Wheeler']
-  ])
-  // could also do these assertions:
-  expect(utils.getWinner).toHaveBeenCalledTimes(2)
-  expect(utils.getWinner).toHaveBeenNthCalledWith(
-    1,
-    'Kent C. Dodds',
-    'Ken Wheeler'
-  )
-  expect(utils.getWinner).toHaveBeenNthCalledWith(
-    2,
-    'Kent C. Dodds',
-    'Ken Wheeler'
-  )
+  test('returns winner', () => {
+    const winner = thumbWar('Michael Tran', "Ken Wheeler");
 
-  // cleanup
-  utils.getWinner = originalGetWinner
-})
+    expect(winner).toBe('Michael Tran');
+
+  });
+
+  test('number', () => {
+    const winner = thumbWar('Michael Tran', "Ken Wheeler");
+
+    // Ensuring that the getWinner function runs twice
+    expect(utils.getWinner).toHaveBeenCalledTimes(2);
+  });
+
+  test('write things at write time', () => {
+    const winner = thumbWar('Michael Tran', "Ken Wheeler");
+    // Ensuring that the getWinner function runs twice
+    expect(utils.getWinner).toHaveBeenCalledWith('Michael Tran', "Ken Wheeler");
+    expect(utils.getWinner).toHaveBeenNthCalledWith(1, 'Michael Tran', "Ken Wheeler")
+    expect(utils.getWinner).toHaveBeenNthCalledWith(2, 'Michael Tran', "Ken Wheeler")
+  });
+
+  test('utils.getWinner call stack', () => {
+    const winner = thumbWar('Michael Tran', "Ken Wheeler");
+
+    expect(utils.getWinner.mock.calls).toEqual([ [ 'Michael Tran', 'Ken Wheeler' ],
+      [ 'Michael Tran', 'Ken Wheeler' ] ]);
+  });
+});
